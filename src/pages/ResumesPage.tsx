@@ -6,6 +6,7 @@ import {
   setDeveloperFilter,
   setSkillsFilter,
   clearFilters,
+  convertToPDF,
 } from "../store/slices/resumesSlice";
 import { fetchDevelopers } from "../store/slices/developersSlice";
 import { Sidebar } from "../components/Sidebar";
@@ -23,8 +24,14 @@ import {
   Select,
   TextField,
   Separator,
+  IconButton,
 } from "@radix-ui/themes";
-import { DownloadIcon, FileTextIcon } from "@radix-ui/react-icons";
+import {
+  DownloadIcon,
+  FileTextIcon,
+  EyeOpenIcon,
+  FileIcon,
+} from "@radix-ui/react-icons";
 import type { RootState } from "../store";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -34,6 +41,9 @@ export function ResumesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDeveloperId, setSelectedDeveloperId] = useState("all");
   const [selectedSkill, setSelectedSkill] = useState("all");
+  const [convertingResumes, setConvertingResumes] = useState<Set<string>>(
+    new Set()
+  );
 
   const dispatch = useAppDispatch();
   const { filteredResumes, isLoading, error } = useTypedSelector(
@@ -98,15 +108,46 @@ export function ResumesPage() {
     dispatch(clearFilters());
   };
 
-  const handleDownloadResume = (resumeUrl: string, title: string) => {
+  const handleDownloadResume = (
+    resumeUrl: string | undefined,
+    title: string,
+    fileType: "pdf" | "docx"
+  ) => {
+    if (!resumeUrl) return;
     const link = document.createElement("a");
-    link.href = `${API_URL}${resumeUrl}.pdf`;
-    link.download = `${title}.pdf`;
+    const extension = fileType === "pdf" ? ".pdf" : ".docx";
+    link.href = `${API_URL}${resumeUrl}${extension}`;
+    link.download = `${title}${extension}`;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleViewPDF = (resumeUrl: string) => {
+    const link = document.createElement("a");
+    link.href = `${API_URL}${resumeUrl}`;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleConvertToPDF = async (resumeId: string) => {
+    setConvertingResumes((prev) => new Set(prev).add(resumeId));
+    try {
+      await dispatch(convertToPDF(resumeId)).unwrap();
+    } catch (error) {
+      console.error("Failed to convert to PDF:", error);
+    } finally {
+      setConvertingResumes((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(resumeId);
+        return newSet;
+      });
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -277,55 +318,124 @@ export function ResumesPage() {
               </Box>
             ) : (
               <Grid columns={{ initial: "1", md: "2", lg: "3" }} gap="6">
-                {filteredResumes.map((resume) => (
-                  <Card key={resume.id} size="3">
-                    <Flex direction="column" gap="3">
-                      <Box>
-                        <Heading size="4" mb="2">
-                          {resume.title}
-                        </Heading>
-                        <Text as="p" size="2" color="gray" mb="2">
-                          Generated for:{" "}
-                          {typeof resume.developer === "string"
-                            ? resume.developer
-                            : resume.developer?.name || "Unknown"}
-                        </Text>
-                        <Text as="p" size="2" color="gray">
-                          Created: {formatDate(resume.createdAt)}
-                        </Text>
-                      </Box>
+                {filteredResumes.map((resume) => {
+                  const developerName =
+                    typeof resume.developer === "string"
+                      ? resume.developer
+                      : resume.developer?.name || "Unknown";
 
-                      {resume.skills && (
-                        <Box>
-                          <Text size="2" weight="bold" mb="2">
-                            Skills:
-                          </Text>
-                          <Flex gap="1" wrap="wrap">
-                            {parseSkills(resume.skills).map((skill, index) => (
-                              <Badge key={index} variant="soft" size="1">
-                                {skill}
-                              </Badge>
-                            ))}
-                          </Flex>
-                        </Box>
-                      )}
+                  const hasPDF = resume.pdfUrl; // Check if PDF exists
+                  const isConverting = convertingResumes.has(resume.id);
 
-                      <Separator />
+                  return (
+                    <Card key={resume.id} size="3">
+                      <Flex direction="column" gap="3">
+                        {/* Header with title, subtitle, and view button */}
+                        <Flex justify="between" align="start">
+                          <Box style={{ flex: 1 }}>
+                            <Heading size="4" mb="1">
+                              {developerName}
+                            </Heading>
+                            <Text as="p" size="2" color="gray" mb="2">
+                              {resume.title}
+                            </Text>
+                            <Text as="p" size="2" color="gray">
+                              Created: {formatDate(resume.createdAt)}
+                            </Text>
+                          </Box>
+                          {resume.pdfUrl && (
+                            <IconButton
+                              variant="ghost"
+                              size="2"
+                              onClick={() =>
+                                resume.pdfUrl && handleViewPDF(resume.pdfUrl)
+                              }
+                              title="View PDF"
+                            >
+                              <EyeOpenIcon width="16" height="16" />
+                            </IconButton>
+                          )}
+                        </Flex>
 
-                      <Button
-                        variant="outline"
-                        size="2"
-                        onClick={() =>
-                          handleDownloadResume(resume.resumeUrl, resume.title)
-                        }
-                        style={{ width: "100%" }}
-                      >
-                        <DownloadIcon />
-                        Download PDF
-                      </Button>
-                    </Flex>
-                  </Card>
-                ))}
+                        {resume.skills && (
+                          <Box>
+                            <Text size="2" weight="bold" mb="2">
+                              Skills:
+                            </Text>
+                            <Flex gap="1" wrap="wrap">
+                              {parseSkills(resume.skills).map(
+                                (skill, index) => (
+                                  <Badge key={index} variant="soft" size="1">
+                                    {skill}
+                                  </Badge>
+                                )
+                              )}
+                            </Flex>
+                          </Box>
+                        )}
+
+                        <Separator />
+
+                        {/* Download Buttons */}
+                        <Flex gap="2">
+                          <Button
+                            variant="outline"
+                            size="2"
+                            onClick={() =>
+                              handleDownloadResume(
+                                resume.resumeUrl,
+                                resume.title,
+                                "docx"
+                              )
+                            }
+                            style={{ flex: 1 }}
+                          >
+                            <FileIcon />
+                            Download Docx
+                          </Button>
+                          {hasPDF ? (
+                            <Button
+                              variant="outline"
+                              size="2"
+                              onClick={() =>
+                                handleDownloadResume(
+                                  resume.pdfUrl,
+                                  resume.title,
+                                  "pdf"
+                                )
+                              }
+                              style={{ flex: 1 }}
+                            >
+                              <DownloadIcon />
+                              Download PDF
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="outline"
+                              size="2"
+                              color="brown"
+                              onClick={() => handleConvertToPDF(resume.id)}
+                              disabled={isConverting}
+                              style={{ flex: 1 }}
+                            >
+                              {isConverting ? (
+                                <Flex align="center" justify="center">
+                                  <Box className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
+                                  Converting...
+                                </Flex>
+                              ) : (
+                                <>
+                                  <FileTextIcon />
+                                  Convert to PDF
+                                </>
+                              )}
+                            </Button>
+                          )}
+                        </Flex>
+                      </Flex>
+                    </Card>
+                  );
+                })}
               </Grid>
             )}
           </Container>

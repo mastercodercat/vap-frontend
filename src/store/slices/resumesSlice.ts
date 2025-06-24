@@ -11,6 +11,7 @@ export interface Resume {
   title: string;
   skills: string | null;
   resumeUrl: string;
+  pdfUrl?: string; // Optional PDF URL
   developerId: string;
   createdAt: string;
   developer: {
@@ -91,6 +92,30 @@ export const generateResume = createAsyncThunk(
   }
 );
 
+export const convertToPDF = createAsyncThunk(
+  "resumes/convertToPDF",
+  async (resumeId: string) => {
+    const response = await fetch(
+      `${API_URL}/resumes/${resumeId}/convert-to-pdf`,
+      {
+        method: "POST",
+        headers: {
+          ...getAuthHeaders(),
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to convert to PDF");
+    }
+
+    const data = await response.json();
+    return data;
+  }
+);
+
 const resumesSlice = createSlice({
   name: "resumes",
   initialState,
@@ -156,6 +181,30 @@ const resumesSlice = createSlice({
       .addCase(generateResume.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message || "Failed to generate resume";
+      })
+      // Convert to PDF
+      .addCase(convertToPDF.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(
+        convertToPDF.fulfilled,
+        (state, action: PayloadAction<Resume>) => {
+          state.isLoading = false;
+          // Update the existing resume with the new PDF URL
+          const index = state.resumes.findIndex(
+            (resume) => resume.id === action.payload.id
+          );
+          if (index !== -1) {
+            state.resumes[index] = action.payload;
+            state.filteredResumes = applyFilters(state.resumes, state.filters);
+          }
+          state.error = null;
+        }
+      )
+      .addCase(convertToPDF.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message || "Failed to convert to PDF";
       });
   },
 });

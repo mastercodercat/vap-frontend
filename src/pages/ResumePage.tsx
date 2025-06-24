@@ -11,11 +11,7 @@ import {
   TextArea,
   Separator,
 } from "@radix-ui/themes";
-import {
-  ChevronDownIcon,
-  DownloadIcon,
-  FileTextIcon,
-} from "@radix-ui/react-icons";
+import { DownloadIcon, FileTextIcon } from "@radix-ui/react-icons";
 import { useAppDispatch, useTypedSelector } from "../store/hooks";
 import { fetchDevelopers } from "../store/slices/developersSlice";
 import { Sidebar } from "../components/Sidebar";
