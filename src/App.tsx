@@ -10,6 +10,7 @@ import { restoreAuth } from "./store/slices/authSlice";
 import { HomePage } from "./pages/HomePage";
 import { LandingPage } from "./pages/LandingPage";
 import { DevelopersPage } from "./pages/DevelopersPage";
+import { ResumePage } from "./pages/ResumePage";
 import type { RootState } from "./store";
 
 function App() {
@@ -63,13 +64,7 @@ function App() {
         <Route
           path="/resume"
           element={
-            isAuthenticated ? (
-              <div className="p-6">
-                <h1>Resume Generation - Coming Soon</h1>
-              </div>
-            ) : (
-              <Navigate to="/" replace />
-            )
+            isAuthenticated ? <ResumePage /> : <Navigate to="/" replace />
           }
         />
         <Route
