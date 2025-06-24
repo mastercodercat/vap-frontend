@@ -1,0 +1,19 @@
+<svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with gradient -->
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B5CF6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Icon: Abstract AI/Assistant symbol -->
+  <circle cx="20" cy="20" r="16" fill="url(#logoGradient)" stroke="white" stroke-width="2"/>
+  <path d="M20 8 L20 32 M12 20 L28 20 M16 14 L24 26 M24 14 L16 26" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Text: VAP -->
+  <text x="45" y="26" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">VAP</text>
+  
+  <!-- Subtitle: Virtual Assistant Platform -->
+  <text x="45" y="35" font-family="Arial, sans-serif" font-size="8" fill="#6B7280">Virtual Assistant Platform</text>
+</svg> 

@@ -1,4 +1,4 @@
-import * as Dialog from "@radix-ui/react-dialog";
+import { Button, Text, Flex, Box, Dialog, TextField } from "@radix-ui/themes";
 import { useAppDispatch, useTypedSelector } from "../store/hooks";
 import { closeSignUpDialog } from "../store/slices/uiSlice";
 import { signUp, clearError } from "../store/slices/authSlice";
@@ -45,80 +45,93 @@ export function SignUpDialog() {
 
   return (
     <Dialog.Root open={isSignUpDialogOpen} onOpenChange={handleOpenChange}>
-      <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
-        <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg p-6 shadow-xl max-w-md w-full mx-4">
-          <Dialog.Title className="text-xl font-semibold text-gray-900 mb-4">
-            Create Your VAP Account
-          </Dialog.Title>
-          {error && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-              {error}
-            </div>
-          )}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+      <Dialog.Content>
+        <Dialog.Title>Create Your VAP Account</Dialog.Title>
+
+        {error && (
+          <Box
+            mb="4"
+            p="3"
+            style={{
+              backgroundColor: "var(--red-2)",
+              border: "1px solid var(--red-6)",
+              borderRadius: "var(--radius-3)",
+              color: "var(--red-11)",
+            }}
+          >
+            {error}
+          </Box>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <Flex direction="column" gap="4">
+            <Box>
+              <Text as="div" size="2" mb="2" weight="bold">
                 Full Name
-              </label>
-              <input
+              </Text>
+              <TextField.Root
                 type="text"
                 required
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setName(e.target.value)
+                }
                 disabled={isLoading}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                size="3"
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            </Box>
+
+            <Box>
+              <Text as="div" size="2" mb="2" weight="bold">
                 Email
-              </label>
-              <input
+              </Text>
+              <TextField.Root
                 type="email"
                 required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setEmail(e.target.value)
+                }
                 disabled={isLoading}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                size="3"
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            </Box>
+
+            <Box>
+              <Text as="div" size="2" mb="2" weight="bold">
                 Password
-              </label>
-              <input
+              </Text>
+              <TextField.Root
                 type="password"
                 required
                 minLength={8}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setPassword(e.target.value)
+                }
                 disabled={isLoading}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                size="3"
               />
-            </div>
-            <button
+            </Box>
+
+            <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              size="3"
+              style={{ width: "100%" }}
             >
               {isLoading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                <Flex align="center" gap="2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                   Creating Account...
-                </div>
+                </Flex>
               ) : (
                 "Create Account"
               )}
-            </button>
-          </form>
-          <Dialog.Close asChild>
-            <button className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-              ✕
-            </button>
-          </Dialog.Close>
-        </Dialog.Content>
-      </Dialog.Portal>
+            </Button>
+          </Flex>
+        </form>
+      </Dialog.Content>
     </Dialog.Root>
   );
 }

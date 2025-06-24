@@ -1,4 +1,3 @@
-import * as Dialog from "@radix-ui/react-dialog";
 import { useAppDispatch, useTypedSelector } from "../store/hooks";
 import {
   closeAddDialog,
@@ -6,6 +5,16 @@ import {
   clearError,
 } from "../store/slices/developersSlice";
 import { useState, useEffect } from "react";
+import {
+  Button,
+  Text,
+  TextField,
+  Flex,
+  Box,
+  Heading,
+  Dialog,
+} from "@radix-ui/themes";
+import { Cross2Icon } from "@radix-ui/react-icons";
 import type { RootState } from "../store";
 
 export function AddDeveloperDialog() {
@@ -57,36 +66,46 @@ export function AddDeveloperDialog() {
 
   return (
     <Dialog.Root open={isAddDialogOpen} onOpenChange={handleOpenChange}>
-      <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
-        <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg p-6 shadow-xl max-w-md w-full mx-4">
-          <Dialog.Title className="text-xl font-semibold text-gray-900 mb-4">
-            Add New Developer
-          </Dialog.Title>
-          {error && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-              {error}
-            </div>
-          )}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+      <Dialog.Content>
+        <Dialog.Title>
+          <Heading size="5">Add New Developer</Heading>
+        </Dialog.Title>
+
+        {error && (
+          <Box
+            p="3"
+            style={{
+              backgroundColor: "var(--red-2)",
+              border: "1px solid var(--red-6)",
+              borderRadius: "var(--radius-3)",
+              color: "var(--red-11)",
+            }}
+          >
+            {error}
+          </Box>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <Flex direction="column" gap="4">
+            <Box>
+              <Text as="div" size="2" mb="2" weight="bold">
                 Name
-              </label>
-              <input
+              </Text>
+              <TextField.Root
                 type="text"
                 required
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setName(e.target.value)
+                }
                 disabled={isLoading}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 placeholder="Enter developer name"
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            </Box>
+            <Box>
+              <Text as="div" size="2" mb="2" weight="bold">
                 Profile File
-              </label>
+              </Text>
               <input
                 type="file"
                 required
@@ -96,44 +115,54 @@ export function AddDeveloperDialog() {
                 accept=".pdf,.doc,.docx,.txt"
               />
               {fileName && (
-                <p className="mt-1 text-sm text-gray-600">
+                <Text size="2" className="mt-1 text-gray-600">
                   Selected: {fileName}
-                </p>
+                </Text>
               )}
-            </div>
-            <div className="flex space-x-3 pt-4">
-              <button
+            </Box>
+            <Flex gap="3" pt="4">
+              <Button
                 type="submit"
                 disabled={isLoading || !file}
-                className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ flex: 1 }}
               >
                 {isLoading ? (
-                  <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  <Flex align="center" justify="center">
+                    <Box className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
                     Adding...
-                  </div>
+                  </Flex>
                 ) : (
                   "Add Developer"
                 )}
-              </button>
-              <Dialog.Close asChild>
-                <button
+              </Button>
+              <Dialog.Close>
+                <Button
                   type="button"
+                  variant="outline"
                   disabled={isLoading}
-                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ flex: 1 }}
                 >
                   Cancel
-                </button>
+                </Button>
               </Dialog.Close>
-            </div>
-          </form>
-          <Dialog.Close asChild>
-            <button className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-              ✕
-            </button>
-          </Dialog.Close>
-        </Dialog.Content>
-      </Dialog.Portal>
+            </Flex>
+          </Flex>
+        </form>
+
+        <Dialog.Close>
+          <Button
+            variant="ghost"
+            size="2"
+            style={{
+              position: "absolute",
+              top: "16px",
+              right: "16px",
+            }}
+          >
+            <Cross2Icon width="16" height="16" />
+          </Button>
+        </Dialog.Close>
+      </Dialog.Content>
     </Dialog.Root>
   );
 }

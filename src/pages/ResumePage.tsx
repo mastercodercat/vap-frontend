@@ -1,6 +1,21 @@
 import { useState, useEffect } from "react";
-import * as Select from "@radix-ui/react-select";
-import { ChevronDownIcon, CheckIcon } from "@radix-ui/react-icons";
+import {
+  Button,
+  Select,
+  Text,
+  Card,
+  Flex,
+  Box,
+  Container,
+  Heading,
+  TextArea,
+  Separator,
+} from "@radix-ui/themes";
+import {
+  ChevronDownIcon,
+  DownloadIcon,
+  FileTextIcon,
+} from "@radix-ui/react-icons";
 import { useAppDispatch, useTypedSelector } from "../store/hooks";
 import { fetchDevelopers } from "../store/slices/developersSlice";
 import { Sidebar } from "../components/Sidebar";
@@ -14,6 +29,7 @@ export function ResumePage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [jobDescription, setJobDescription] = useState("");
   const [selectedDeveloperId, setSelectedDeveloperId] = useState("");
+  const [docType, setDocType] = useState("pdf");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedResumeUrl, setGeneratedResumeUrl] = useState<string | null>(
     null
@@ -53,6 +69,7 @@ export function ResumePage() {
         body: JSON.stringify({
           jobDescription: jobDescription.trim(),
           developerId: selectedDeveloperId,
+          docType: docType,
         }),
       });
 
@@ -62,7 +79,9 @@ export function ResumePage() {
       }
 
       const data = await response.json();
-      const url = `${API_URL}${data.resumeUrl}.pdf`;
+      const url = `${API_URL}${
+        docType === "pdf" ? data.pdfUrl : data.resumeUrl
+      }`;
       setGeneratedResumeUrl(url);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -75,10 +94,9 @@ export function ResumePage() {
     if (generatedResumeUrl) {
       const link = document.createElement("a");
       link.href = generatedResumeUrl;
-      link.download = "generated-resume.pdf";
+      link.download = `generated-resume.${docType}`;
       document.body.appendChild(link);
       link.click();
-      0;
       document.body.removeChild(link);
     }
   };
@@ -99,177 +117,217 @@ export function ResumePage() {
 
         {/* Main content area */}
         <main className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-4xl mx-auto">
+          <Container size="4">
             {/* Header */}
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-900">
+            <Box mb="6">
+              <Heading size="8" mb="2">
                 Resume Generation
-              </h1>
-              <p className="text-gray-600 mt-2">
+              </Heading>
+              <Text color="gray" size="3">
                 Generate customized resumes for developers based on job
                 descriptions
-              </p>
-            </div>
+              </Text>
+            </Box>
 
             {/* Form */}
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            <Card size="3" mb="6">
+              <Heading size="5" mb="5">
                 Generate Resume
-              </h2>
+              </Heading>
 
-              <div className="space-y-6">
+              <Flex direction="column" gap="5">
                 {/* Job Description Input */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                <Box>
+                  <Text as="div" size="2" mb="2" weight="bold">
                     Job Description *
-                  </label>
-                  <textarea
+                  </Text>
+                  <TextArea
                     value={jobDescription}
-                    onChange={(e) => setJobDescription(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                      setJobDescription(e.target.value)
+                    }
                     placeholder="Enter the job description to customize the resume..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                    rows={6}
                     disabled={isGenerating}
+                    style={{
+                      minHeight: "120px",
+                      resize: "vertical",
+                    }}
                   />
-                  <p className="text-sm text-gray-500 mt-1">
+                  <Text as="p" size="2" color="gray" mt="2">
                     Provide a detailed job description to tailor the resume
                     accordingly
-                  </p>
-                </div>
+                  </Text>
+                </Box>
 
                 {/* Developer Select */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                <Box>
+                  <Text as="div" size="2" mb="2" weight="bold">
                     Select Developer *
-                  </label>
+                  </Text>
                   {isLoadingDevelopers ? (
-                    <div className="flex items-center">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
-                      <span className="text-gray-600">
+                    <Flex align="center" gap="2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                      <Text size="2" color="gray">
                         Loading developers...
-                      </span>
-                    </div>
+                      </Text>
+                    </Flex>
                   ) : developers.length === 0 ? (
-                    <div className="text-center py-4 text-gray-500">
-                      No developers available. Please add developers first.
-                    </div>
+                    <Box py="4" style={{ textAlign: "center" }}>
+                      <Text as="p" color="gray" size="2">
+                        No developers available. Please add developers first.
+                      </Text>
+                    </Box>
                   ) : (
                     <Select.Root
                       value={selectedDeveloperId}
                       onValueChange={setSelectedDeveloperId}
                     >
                       <Select.Trigger
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white flex items-center justify-between"
+                        placeholder="Select a developer"
                         disabled={isGenerating}
-                      >
-                        <Select.Value placeholder="Select a developer" />
-                        <Select.Icon>
-                          <ChevronDownIcon className="w-4 h-4 text-gray-500" />
-                        </Select.Icon>
-                      </Select.Trigger>
-
-                      <Select.Portal>
-                        <Select.Content className="bg-white rounded-md shadow-lg border border-gray-200 overflow-hidden">
-                          <Select.Viewport className="p-1">
-                            {developers.map((developer) => (
-                              <Select.Item
-                                key={developer.id}
-                                value={developer.id}
-                                className="relative flex items-center px-3 py-2 text-sm text-gray-900 rounded cursor-pointer hover:bg-blue-50 focus:bg-blue-50 focus:outline-none"
-                              >
-                                <Select.ItemText>
-                                  {developer.name}
-                                </Select.ItemText>
-                                <Select.ItemIndicator className="absolute right-2">
-                                  <CheckIcon className="w-4 h-4 text-blue-600" />
-                                </Select.ItemIndicator>
-                              </Select.Item>
-                            ))}
-                          </Select.Viewport>
-                        </Select.Content>
-                      </Select.Portal>
+                        className="w-full"
+                      />
+                      <Select.Content>
+                        {developers.map((developer) => (
+                          <Select.Item key={developer.id} value={developer.id}>
+                            {developer.name}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
                     </Select.Root>
                   )}
-                </div>
+                </Box>
+
+                {/* Document Type Select */}
+                <Box>
+                  <Text as="div" size="2" mb="2" weight="bold">
+                    Document Type
+                  </Text>
+                  <Select.Root value={docType} onValueChange={setDocType}>
+                    <Select.Trigger
+                      disabled={isGenerating}
+                      className="w-full"
+                    />
+                    <Select.Content>
+                      <Select.Item value="pdf">PDF</Select.Item>
+                      <Select.Item value="docx">DOCX</Select.Item>
+                    </Select.Content>
+                  </Select.Root>
+                  <Text as="p" size="2" color="gray" mt="2">
+                    Choose the document format for your resume
+                  </Text>
+                </Box>
 
                 {/* Generate Button */}
-                <div>
-                  <button
+                <Box>
+                  <Button
                     onClick={handleGenerateResume}
                     disabled={!isFormValid || isGenerating}
-                    className={`w-full py-3 px-4 rounded-md font-medium transition-colors ${
-                      isFormValid && !isGenerating
-                        ? "bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    }`}
+                    size="3"
+                    style={{ width: "100%" }}
                   >
                     {isGenerating ? (
-                      <div className="flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      <Flex align="center" gap="2">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                         Generating Resume...
-                      </div>
+                      </Flex>
                     ) : (
                       "Generate Resume"
                     )}
-                  </button>
-                </div>
-              </div>
+                  </Button>
+                </Box>
+              </Flex>
 
               {/* Error Message */}
               {error && (
-                <div className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md">
+                <Box
+                  mt="4"
+                  p="3"
+                  style={{
+                    backgroundColor: "var(--red-2)",
+                    border: "1px solid var(--red-6)",
+                    borderRadius: "var(--radius-3)",
+                    color: "var(--red-11)",
+                  }}
+                >
                   {error}
-                </div>
+                </Box>
               )}
-            </div>
+            </Card>
 
             {/* Generated Resume Display */}
             {generatedResumeUrl && (
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-semibold text-gray-900">
-                    Generated Resume
-                  </h2>
-                  <button
-                    onClick={handleDownloadResume}
-                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors flex items-center focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                  >
-                    <svg
-                      className="w-4 h-4 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                      />
-                    </svg>
-                    Download PDF
-                  </button>
-                </div>
+              <Card size="3">
+                <Flex justify="between" align="center" mb="4">
+                  <Heading size="5">Generated Resume</Heading>
+                  <Button onClick={handleDownloadResume} color="green">
+                    <DownloadIcon />
+                    Download {docType.toUpperCase()}
+                  </Button>
+                </Flex>
 
                 {selectedDeveloper && (
-                  <div className="mb-4 p-4 bg-blue-50 rounded-md">
-                    <p className="text-sm text-blue-800">
+                  <Box
+                    p="4"
+                    mb="4"
+                    style={{
+                      backgroundColor: "var(--blue-2)",
+                      borderRadius: "var(--radius-3)",
+                    }}
+                  >
+                    <Text as="p" size="2" color="blue">
                       <strong>Generated for:</strong> {selectedDeveloper.name}
-                    </p>
-                  </div>
+                    </Text>
+                    <Text as="p" size="2" color="blue" mt="1">
+                      <strong>Format:</strong> {docType.toUpperCase()}
+                    </Text>
+                  </Box>
                 )}
 
-                {/* PDF Preview */}
-                <div className="border border-gray-200 rounded-md overflow-hidden">
-                  <iframe
-                    src={generatedResumeUrl}
-                    className="w-full h-96"
-                    title="Generated Resume Preview"
-                  />
-                </div>
-              </div>
+                <Separator my="4" />
+
+                {/* PDF Preview - Only show for PDF files */}
+                {docType === "pdf" && (
+                  <Box
+                    style={{
+                      border: "1px solid var(--gray-6)",
+                      borderRadius: "var(--radius-3)",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <iframe
+                      src={generatedResumeUrl}
+                      style={{ width: "100%", height: "400px" }}
+                      title="Generated Resume Preview"
+                    />
+                  </Box>
+                )}
+
+                {/* DOCX files - Show info message */}
+                {docType === "docx" && (
+                  <Box
+                    p="6"
+                    style={{
+                      border: "1px solid var(--gray-6)",
+                      borderRadius: "var(--radius-3)",
+                      backgroundColor: "var(--gray-2)",
+                      textAlign: "center",
+                    }}
+                  >
+                    <FileTextIcon
+                      width="64"
+                      height="64"
+                      style={{ color: "var(--gray-8)", margin: "0 auto 16px" }}
+                    />
+                    <Text as="p" color="gray">
+                      DOCX file generated successfully. Click the download
+                      button above to save the file.
+                    </Text>
+                  </Box>
+                )}
+              </Card>
             )}
-          </div>
+          </Container>
         </main>
       </div>
     </div>

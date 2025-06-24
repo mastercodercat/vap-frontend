@@ -9,6 +9,22 @@ import { AddDeveloperDialog } from "../components/AddDeveloperDialog";
 import { EditDeveloperDialog } from "../components/EditDeveloperDialog";
 import { Sidebar } from "../components/Sidebar";
 import { Header } from "../components/Header";
+import {
+  Button,
+  Text,
+  Card,
+  Flex,
+  Box,
+  Container,
+  Heading,
+  Grid,
+} from "@radix-ui/themes";
+import {
+  PlusIcon,
+  Pencil1Icon,
+  FileTextIcon,
+  PersonIcon,
+} from "@radix-ui/react-icons";
 import type { RootState } from "../store";
 import type { Developer } from "../store/slices/developersSlice";
 
@@ -61,12 +77,14 @@ export function DevelopersPage() {
         <div className="flex-1 flex flex-col lg:ml-64">
           <Header onMenuToggle={toggleSidebar} pageTitle="Developers" />
           <main className="flex-1 overflow-y-auto p-6">
-            <div className="flex items-center justify-center h-64">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p className="text-gray-600">Loading developers...</p>
-              </div>
-            </div>
+            <Container size="4">
+              <Flex align="center" justify="center" style={{ height: "400px" }}>
+                <Box style={{ textAlign: "center" }}>
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <Text color="gray">Loading developers...</Text>
+                </Box>
+              </Flex>
+            </Container>
           </main>
         </div>
       </div>
@@ -85,176 +103,104 @@ export function DevelopersPage() {
 
         {/* Main content area */}
         <main className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-7xl mx-auto">
+          <Container size="4">
             {/* Header */}
-            <div className="flex justify-between items-center mb-8">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">Developers</h1>
-                <p className="text-gray-600 mt-2">
+            <Flex justify="between" align="center" mb="6">
+              <Box>
+                <Heading size="8" mb="2">
+                  Developers
+                </Heading>
+                <Text color="gray" size="3">
                   Manage and connect with talented developers
-                </p>
-              </div>
-              <button
-                onClick={handleAddDeveloper}
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center"
-              >
-                <svg
-                  className="w-5 h-5 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  />
-                </svg>
+                </Text>
+              </Box>
+              <Button onClick={handleAddDeveloper} size="3">
+                <PlusIcon />
                 Add Developer
-              </button>
-            </div>
+              </Button>
+            </Flex>
 
             {/* Error Message */}
             {error && (
-              <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md">
+              <Box
+                mb="6"
+                p="4"
+                style={{
+                  backgroundColor: "var(--red-2)",
+                  border: "1px solid var(--red-6)",
+                  borderRadius: "var(--radius-3)",
+                  color: "var(--red-11)",
+                }}
+              >
                 {error}
-              </div>
+              </Box>
             )}
 
             {/* Developers List */}
             {developers.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="text-gray-400 mb-4">
-                  <svg
-                    className="w-16 h-16 mx-auto"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1}
-                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <Box py="12" style={{ textAlign: "center" }}>
+                <PersonIcon
+                  width="64"
+                  height="64"
+                  style={{ color: "var(--gray-8)", margin: "0 auto 16px" }}
+                />
+                <Heading size="5" mb="2">
                   No developers found
-                </h3>
-                <p className="text-gray-600 mb-4">
+                </Heading>
+                <Text color="gray" mb="4">
                   Get started by adding your first developer.
-                </p>
-                <button
-                  onClick={handleAddDeveloper}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  Add Developer
-                </button>
-              </div>
+                </Text>
+                <Button onClick={handleAddDeveloper}>Add Developer</Button>
+              </Box>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Grid columns={{ initial: "1", md: "2", lg: "3" }} gap="6">
                 {developers.map((developer) => (
-                  <div
-                    key={developer.id}
-                    className="bg-white rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow"
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  <Card key={developer.id} size="3">
+                    <Flex justify="between" align="start" mb="4">
+                      <Box style={{ flex: 1 }}>
+                        <Heading size="4" mb="2">
                           {developer.name}
-                        </h3>
-                        <div className="flex items-center text-gray-600 text-sm">
-                          <svg
-                            className="w-4 h-4 mr-2"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                            />
-                          </svg>
-                          {getFileName(developer.link)}
-                        </div>
-                      </div>
-                      <button
+                        </Heading>
+                        <Flex align="center" gap="2" mb="2">
+                          <FileTextIcon />
+                          <Text size="2" color="gray">
+                            {getFileName(developer.link)}
+                          </Text>
+                        </Flex>
+                      </Box>
+                      <Button
+                        variant="ghost"
+                        size="2"
                         onClick={() => handleEditDeveloper(developer)}
-                        className="ml-4 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
                         title="Edit developer"
                       >
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
+                        <Pencil1Icon />
+                      </Button>
+                    </Flex>
 
-                    <div className="flex space-x-2">
-                      <button
+                    <Flex gap="2">
+                      <Button
+                        variant="outline"
+                        size="2"
                         onClick={() =>
                           handleDownloadFile(developer.link, developer.name)
                         }
-                        className="flex-1 bg-blue-600 text-white text-center py-2 px-3 rounded-md hover:bg-blue-700 transition-colors text-sm flex items-center justify-center"
+                        style={{ flex: 1 }}
                       >
-                        <svg
-                          className="w-4 h-4 mr-1"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          />
-                        </svg>
-                        Download
-                      </button>
-                      <button
-                        onClick={() => handleEditDeveloper(developer)}
-                        className="bg-gray-100 text-gray-700 py-2 px-3 rounded-md hover:bg-gray-200 transition-colors text-sm"
-                      >
-                        Edit
-                      </button>
-                    </div>
-                  </div>
+                        Download Profile
+                      </Button>
+                    </Flex>
+                  </Card>
                 ))}
-              </div>
+              </Grid>
             )}
 
-            {/* Loading overlay for updates */}
-            {isLoading && developers.length > 0 && (
-              <div className="fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center z-50">
-                <div className="bg-white rounded-lg p-6 shadow-xl">
-                  <div className="flex items-center">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mr-3"></div>
-                    <span className="text-gray-700">Updating...</span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+            {/* Dialogs */}
+            <AddDeveloperDialog />
+            <EditDeveloperDialog />
+          </Container>
         </main>
       </div>
-
-      {/* Dialogs */}
-      <AddDeveloperDialog />
-      <EditDeveloperDialog />
     </div>
   );
 }

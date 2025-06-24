@@ -1,6 +1,25 @@
 import { useState } from "react";
 import { Sidebar } from "../components/Sidebar";
 import { Header } from "../components/Header";
+import {
+  Button,
+  Text,
+  Card,
+  Flex,
+  Box,
+  Container,
+  Heading,
+  Grid,
+} from "@radix-ui/themes";
+import {
+  PersonIcon,
+  FileTextIcon,
+  CodeIcon,
+  CheckIcon,
+  ClockIcon,
+  TargetIcon,
+  BarChartIcon,
+} from "@radix-ui/react-icons";
 
 export function HomePage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -21,173 +40,274 @@ export function HomePage() {
 
         {/* Main content area */}
         <main className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-7xl mx-auto">
+          <Container size="4">
             {/* Welcome section */}
-            <div className="mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            <Box mb="6">
+              <Heading size="8" mb="2">
                 Welcome to VAP Dashboard
-              </h2>
-              <p className="text-gray-600">
+              </Heading>
+              <Text as="p" color="gray" size="3">
                 Your AI-powered virtual assistant is ready to help you be more
                 productive.
-              </p>
-            </div>
+              </Text>
+            </Box>
 
             {/* Stats cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <div className="bg-white rounded-lg shadow p-6">
-                <div className="flex items-center">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <span className="text-blue-600 text-xl">📊</span>
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">
+            <Grid columns={{ initial: "1", md: "2", lg: "4" }} gap="6" mb="6">
+              <Card size="3">
+                <Flex align="center">
+                  <Box
+                    p="2"
+                    style={{
+                      backgroundColor: "var(--blue-2)",
+                      borderRadius: "var(--radius-3)",
+                    }}
+                  >
+                    <BarChartIcon
+                      style={{
+                        color: "var(--blue-9)",
+                        fontSize: "var(--font-size-5)",
+                      }}
+                    />
+                  </Box>
+                  <Box ml="4">
+                    <Text as="p" size="2" color="gray" weight="medium">
                       Total Tasks
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900">24</p>
-                  </div>
-                </div>
-              </div>
+                    </Text>
+                    <Text as="p" size="6" weight="bold">
+                      24
+                    </Text>
+                  </Box>
+                </Flex>
+              </Card>
 
-              <div className="bg-white rounded-lg shadow p-6">
-                <div className="flex items-center">
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <span className="text-green-600 text-xl">✅</span>
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">
+              <Card size="3">
+                <Flex align="center">
+                  <Box
+                    p="2"
+                    style={{
+                      backgroundColor: "var(--green-2)",
+                      borderRadius: "var(--radius-3)",
+                    }}
+                  >
+                    <CheckIcon
+                      style={{
+                        color: "var(--green-9)",
+                        fontSize: "var(--font-size-5)",
+                      }}
+                    />
+                  </Box>
+                  <Box ml="4">
+                    <Text as="p" size="2" color="gray" weight="medium">
                       Completed
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900">18</p>
-                  </div>
-                </div>
-              </div>
+                    </Text>
+                    <Text as="p" size="6" weight="bold">
+                      18
+                    </Text>
+                  </Box>
+                </Flex>
+              </Card>
 
-              <div className="bg-white rounded-lg shadow p-6">
-                <div className="flex items-center">
-                  <div className="p-2 bg-yellow-100 rounded-lg">
-                    <span className="text-yellow-600 text-xl">⏰</span>
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">
+              <Card size="3">
+                <Flex align="center">
+                  <Box
+                    p="2"
+                    style={{
+                      backgroundColor: "var(--yellow-2)",
+                      borderRadius: "var(--radius-3)",
+                    }}
+                  >
+                    <ClockIcon
+                      style={{
+                        color: "var(--yellow-9)",
+                        fontSize: "var(--font-size-5)",
+                      }}
+                    />
+                  </Box>
+                  <Box ml="4">
+                    <Text as="p" size="2" color="gray" weight="medium">
                       In Progress
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900">6</p>
-                  </div>
-                </div>
-              </div>
+                    </Text>
+                    <Text as="p" size="6" weight="bold">
+                      6
+                    </Text>
+                  </Box>
+                </Flex>
+              </Card>
 
-              <div className="bg-white rounded-lg shadow p-6">
-                <div className="flex items-center">
-                  <div className="p-2 bg-purple-100 rounded-lg">
-                    <span className="text-purple-600 text-xl">🎯</span>
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">
+              <Card size="3">
+                <Flex align="center">
+                  <Box
+                    p="2"
+                    style={{
+                      backgroundColor: "var(--purple-2)",
+                      borderRadius: "var(--radius-3)",
+                    }}
+                  >
+                    <TargetIcon
+                      style={{
+                        color: "var(--purple-9)",
+                        fontSize: "var(--font-size-5)",
+                      }}
+                    />
+                  </Box>
+                  <Box ml="4">
+                    <Text as="p" size="2" color="gray" weight="medium">
                       Efficiency
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900">85%</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+                    </Text>
+                    <Text as="p" size="6" weight="bold">
+                      85%
+                    </Text>
+                  </Box>
+                </Flex>
+              </Card>
+            </Grid>
 
             {/* Quick actions */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <Grid columns={{ initial: "1", lg: "2" }} gap="6" mb="6">
+              <Card size="3">
+                <Heading size="5" mb="4">
                   Quick Actions
-                </h3>
-                <div className="space-y-3">
-                  <button className="w-full flex items-center p-3 text-left rounded-lg hover:bg-gray-50 transition-colors">
-                    <span className="text-lg mr-3">👨‍💻</span>
-                    <div>
-                      <p className="font-medium text-gray-900">
+                </Heading>
+                <Flex direction="column" gap="3">
+                  <Button
+                    variant="ghost"
+                    style={{
+                      justifyContent: "flex-start",
+                      padding: "var(--space-3)",
+                    }}
+                  >
+                    <PersonIcon
+                      style={{
+                        marginRight: "var(--space-3)",
+                        fontSize: "var(--font-size-5)",
+                      }}
+                    />
+                    <Box style={{ textAlign: "left" }}>
+                      <Text as="p" weight="medium">
                         Find Developers
-                      </p>
-                      <p className="text-sm text-gray-600">
+                      </Text>
+                      <Text as="p" size="2" color="gray">
                         Browse and connect with talented developers
-                      </p>
-                    </div>
-                  </button>
-                  <button className="w-full flex items-center p-3 text-left rounded-lg hover:bg-gray-50 transition-colors">
-                    <span className="text-lg mr-3">📄</span>
-                    <div>
-                      <p className="font-medium text-gray-900">
+                      </Text>
+                    </Box>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    style={{
+                      justifyContent: "flex-start",
+                      padding: "var(--space-3)",
+                    }}
+                  >
+                    <FileTextIcon
+                      style={{
+                        marginRight: "var(--space-3)",
+                        fontSize: "var(--font-size-5)",
+                      }}
+                    />
+                    <Box style={{ textAlign: "left" }}>
+                      <Text as="p" weight="medium">
                         Generate Resume
-                      </p>
-                      <p className="text-sm text-gray-600">
+                      </Text>
+                      <Text as="p" size="2" color="gray">
                         Create professional resumes with AI assistance
-                      </p>
-                    </div>
-                  </button>
-                  <button className="w-full flex items-center p-3 text-left rounded-lg hover:bg-gray-50 transition-colors">
-                    <span className="text-lg mr-3">📁</span>
-                    <div>
-                      <p className="font-medium text-gray-900">
+                      </Text>
+                    </Box>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    style={{
+                      justifyContent: "flex-start",
+                      padding: "var(--space-3)",
+                    }}
+                  >
+                    <CodeIcon
+                      style={{
+                        marginRight: "var(--space-3)",
+                        fontSize: "var(--font-size-5)",
+                      }}
+                    />
+                    <Box style={{ textAlign: "left" }}>
+                      <Text as="p" weight="medium">
                         Manage Projects
-                      </p>
-                      <p className="text-sm text-gray-600">
+                      </Text>
+                      <Text as="p" size="2" color="gray">
                         Organize and track your project progress
-                      </p>
-                    </div>
-                  </button>
-                </div>
-              </div>
+                      </Text>
+                    </Box>
+                  </Button>
+                </Flex>
+              </Card>
 
-              <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              <Card size="3">
+                <Heading size="5" mb="4">
                   Recent Activity
-                </h3>
-                <div className="space-y-4">
-                  <div className="flex items-start">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3"></div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">
+                </Heading>
+                <Flex direction="column" gap="4">
+                  <Flex align="start">
+                    <Box
+                      style={{
+                        width: "8px",
+                        height: "8px",
+                        backgroundColor: "var(--blue-9)",
+                        borderRadius: "50%",
+                        marginTop: "var(--space-2)",
+                        marginRight: "var(--space-3)",
+                      }}
+                    />
+                    <Box>
+                      <Text as="p" size="2" weight="medium">
                         Resume generated successfully
-                      </p>
-                      <p className="text-xs text-gray-500">2 hours ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start">
-                    <div className="w-2 h-2 bg-green-600 rounded-full mt-2 mr-3"></div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">
+                      </Text>
+                      <Text as="p" size="1" color="gray">
+                        2 hours ago
+                      </Text>
+                    </Box>
+                  </Flex>
+                  <Flex align="start">
+                    <Box
+                      style={{
+                        width: "8px",
+                        height: "8px",
+                        backgroundColor: "var(--green-9)",
+                        borderRadius: "50%",
+                        marginTop: "var(--space-2)",
+                        marginRight: "var(--space-3)",
+                      }}
+                    />
+                    <Box>
+                      <Text as="p" size="2" weight="medium">
                         Connected with 3 developers
-                      </p>
-                      <p className="text-xs text-gray-500">4 hours ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start">
-                    <div className="w-2 h-2 bg-yellow-600 rounded-full mt-2 mr-3"></div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">
+                      </Text>
+                      <Text as="p" size="1" color="gray">
+                        4 hours ago
+                      </Text>
+                    </Box>
+                  </Flex>
+                  <Flex align="start">
+                    <Box
+                      style={{
+                        width: "8px",
+                        height: "8px",
+                        backgroundColor: "var(--yellow-9)",
+                        borderRadius: "50%",
+                        marginTop: "var(--space-2)",
+                        marginRight: "var(--space-3)",
+                      }}
+                    />
+                    <Box>
+                      <Text as="p" size="2" weight="medium">
                         Project milestone completed
-                      </p>
-                      <p className="text-xs text-gray-500">1 day ago</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* AI Assistant */}
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow p-6 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">AI Assistant</h3>
-                  <p className="text-blue-100 mb-4">
-                    Need help? Your AI assistant is ready to help you with
-                    tasks, questions, and productivity tips.
-                  </p>
-                  <button className="bg-white text-blue-600 px-4 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors">
-                    Start Chat
-                  </button>
-                </div>
-                <div className="text-4xl">🤖</div>
-              </div>
-            </div>
-          </div>
+                      </Text>
+                      <Text as="p" size="1" color="gray">
+                        1 day ago
+                      </Text>
+                    </Box>
+                  </Flex>
+                </Flex>
+              </Card>
+            </Grid>
+          </Container>
         </main>
       </div>
     </div>

@@ -2,6 +2,17 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useTypedSelector } from "../store/hooks";
 import { useAppDispatch } from "../store/hooks";
 import { signOut } from "../store/slices/authSlice";
+import { Logo } from "./Logo";
+import { Button, Flex, Box, Text } from "@radix-ui/themes";
+import {
+  DashboardIcon,
+  PersonIcon,
+  FileTextIcon,
+  ClipboardIcon,
+  CodeIcon,
+  BarChartIcon,
+  GearIcon,
+} from "@radix-ui/react-icons";
 import type { RootState } from "../store";
 
 interface SidebarProps {
@@ -16,12 +27,48 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { user } = useTypedSelector((state: RootState) => state.auth);
 
   const menuItems = [
-    { id: "dashboard", label: "Dashboard", icon: "📊", path: "/dashboard" },
-    { id: "developers", label: "Developers", icon: "👨‍💻", path: "/developers" },
-    { id: "resume", label: "Resume Generation", icon: "📄", path: "/resume" },
-    { id: "projects", label: "Projects", icon: "📁", path: "/projects" },
-    { id: "analytics", label: "Analytics", icon: "📈", path: "/analytics" },
-    { id: "settings", label: "Settings", icon: "⚙️", path: "/settings" },
+    {
+      id: "dashboard",
+      label: "Dashboard",
+      icon: <DashboardIcon width="20" height="20" />,
+      path: "/dashboard",
+    },
+    {
+      id: "developers",
+      label: "Developers",
+      icon: <PersonIcon width="20" height="20" />,
+      path: "/developers",
+    },
+    {
+      id: "resume",
+      label: "Resume Generation",
+      icon: <FileTextIcon width="20" height="20" />,
+      path: "/resume",
+    },
+    {
+      id: "resumes",
+      label: "Resumes",
+      icon: <ClipboardIcon width="20" height="20" />,
+      path: "/resumes",
+    },
+    {
+      id: "projects",
+      label: "Projects",
+      icon: <CodeIcon width="20" height="20" />,
+      path: "/projects",
+    },
+    {
+      id: "analytics",
+      label: "Analytics",
+      icon: <BarChartIcon width="20" height="20" />,
+      path: "/analytics",
+    },
+    {
+      id: "settings",
+      label: "Settings",
+      icon: <GearIcon width="20" height="20" />,
+      path: "/settings",
+    },
   ];
 
   const handleItemClick = (path: string) => {
@@ -48,33 +95,38 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     <>
       {/* Overlay for mobile */}
       {isOpen && (
-        <div
+        <Box
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
           onClick={onClose}
         />
       )}
 
       {/* Sidebar */}
-      <div
+      <Box
         className={`
         fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50
         ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
       `}
       >
         {/* Logo */}
-        <div className="flex items-center justify-center h-16 border-b border-gray-200">
-          <h1 className="text-2xl font-bold text-blue-600">VAP</h1>
-        </div>
+        <Flex
+          align="center"
+          justify="center"
+          className="h-16 border-b border-gray-200"
+        >
+          <Logo size="md" />
+        </Flex>
 
         {/* Navigation */}
-        <nav className="mt-6">
-          <div className="px-4 space-y-2">
+        <Box className="mt-6">
+          <Flex direction="column" gap="2" className="px-4">
             {menuItems.map((item) => (
-              <button
+              <Button
                 key={item.id}
+                variant="ghost"
                 onClick={() => handleItemClick(item.path)}
                 className={`
-                  w-full flex items-center px-4 py-3 text-left rounded-lg transition-colors
+                  w-full justify-start px-4 py-3
                   ${
                     getActiveItem() === item.id
                       ? "bg-blue-100 text-blue-700 border-r-2 border-blue-600"
@@ -82,34 +134,41 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                   }
                 `}
               >
-                <span className="text-lg mr-3">{item.icon}</span>
-                <span className="font-medium">{item.label}</span>
-              </button>
+                <Flex align="center" gap="3">
+                  {item.icon}
+                  <Text as="p" weight="medium">
+                    {item.label}
+                  </Text>
+                </Flex>
+              </Button>
             ))}
-          </div>
-        </nav>
+          </Flex>
+        </Box>
 
         {/* User Info and Sign Out */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
-          <div className="flex items-center mb-3">
-            <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+        <Box className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+          <Flex align="center" mb="3">
+            <Box className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
               {user?.name?.charAt(0) || user?.email?.charAt(0) || "U"}
-            </div>
-            <div className="ml-3">
-              <p className="text-sm font-medium text-gray-900">
+            </Box>
+            <Box className="ml-3">
+              <Text as="p" size="2" weight="medium" className="text-gray-900">
                 {user?.name || "User"}
-              </p>
-              <p className="text-xs text-gray-500">{user?.email}</p>
-            </div>
-          </div>
-          <button
+              </Text>
+              <Text as="p" size="1" className="text-gray-500">
+                {user?.email}
+              </Text>
+            </Box>
+          </Flex>
+          <Button
             onClick={handleSignOut}
-            className="w-full px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm"
+            className="w-full"
+            style={{ backgroundColor: "var(--red-9)", color: "white" }}
           >
             Sign Out
-          </button>
-        </div>
-      </div>
+          </Button>
+        </Box>
+      </Box>
     </>
   );
 }
