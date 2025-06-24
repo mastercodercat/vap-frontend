@@ -4,9 +4,10 @@ import type { RootState } from "../store";
 
 interface HeaderProps {
   onMenuToggle: () => void;
+  pageTitle?: string;
 }
 
-export function Header({ onMenuToggle }: HeaderProps) {
+export function Header({ onMenuToggle, pageTitle = "Dashboard" }: HeaderProps) {
   const dispatch = useAppDispatch();
   const { user } = useTypedSelector((state: RootState) => state.auth);
 
@@ -38,7 +39,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
 
       {/* Page title */}
       <div className="flex-1 lg:ml-0">
-        <h1 className="text-xl font-semibold text-gray-900">Dashboard</h1>
+        <h1 className="text-xl font-semibold text-gray-900">{pageTitle}</h1>
       </div>
 
       {/* User menu */}

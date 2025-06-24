@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useTypedSelector } from "../store/hooks";
+import type { RootState } from "../store";
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  activeItem?: string;
+  onItemClick?: (itemId: string) => void;
 }
 
-export function Sidebar({ isOpen, onClose }: SidebarProps) {
-  const [activeItem, setActiveItem] = useState("dashboard");
+export function Sidebar({
+  isOpen,
+  onClose,
+  activeItem = "dashboard",
+  onItemClick,
+}: SidebarProps) {
+  const { user } = useTypedSelector((state: RootState) => state.auth);
 
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: "📊" },
@@ -16,6 +24,12 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     { id: "analytics", label: "Analytics", icon: "📈" },
     { id: "settings", label: "Settings", icon: "⚙️" },
   ];
+
+  const handleItemClick = (itemId: string) => {
+    if (onItemClick) {
+      onItemClick(itemId);
+    }
+  };
 
   return (
     <>
@@ -45,7 +59,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             {menuItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => setActiveItem(item.id)}
+                onClick={() => handleItemClick(item.id)}
                 className={`
                   w-full flex items-center px-4 py-3 text-left rounded-lg transition-colors
                   ${
@@ -66,11 +80,13 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
           <div className="flex items-center">
             <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
-              U
+              {user?.name?.charAt(0) || user?.email?.charAt(0) || "U"}
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-900">User</p>
-              <p className="text-xs text-gray-500">user@example.com</p>
+              <p className="text-sm font-medium text-gray-900">
+                {user?.name || "User"}
+              </p>
+              <p className="text-xs text-gray-500">{user?.email}</p>
             </div>
           </div>
         </div>
