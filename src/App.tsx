@@ -9,6 +9,7 @@ import { useTypedSelector, useAppDispatch } from "./store/hooks";
 import { restoreAuth } from "./store/slices/authSlice";
 import { HomePage } from "./pages/HomePage";
 import { LandingPage } from "./pages/LandingPage";
+import { DevelopersPage } from "./pages/DevelopersPage";
 import type { RootState } from "./store";
 
 function App() {
@@ -52,6 +53,60 @@ function App() {
         <Route
           path="/dashboard"
           element={isAuthenticated ? <HomePage /> : <Navigate to="/" replace />}
+        />
+        <Route
+          path="/developers"
+          element={
+            isAuthenticated ? <DevelopersPage /> : <Navigate to="/" replace />
+          }
+        />
+        <Route
+          path="/resume"
+          element={
+            isAuthenticated ? (
+              <div className="p-6">
+                <h1>Resume Generation - Coming Soon</h1>
+              </div>
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route
+          path="/projects"
+          element={
+            isAuthenticated ? (
+              <div className="p-6">
+                <h1>Projects - Coming Soon</h1>
+              </div>
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            isAuthenticated ? (
+              <div className="p-6">
+                <h1>Analytics - Coming Soon</h1>
+              </div>
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            isAuthenticated ? (
+              <div className="p-6">
+                <h1>Settings - Coming Soon</h1>
+              </div>
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

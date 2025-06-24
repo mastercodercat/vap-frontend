@@ -1,34 +1,47 @@
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTypedSelector } from "../store/hooks";
+import { useAppDispatch } from "../store/hooks";
+import { signOut } from "../store/slices/authSlice";
 import type { RootState } from "../store";
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  activeItem?: string;
-  onItemClick?: (itemId: string) => void;
 }
 
-export function Sidebar({
-  isOpen,
-  onClose,
-  activeItem = "dashboard",
-  onItemClick,
-}: SidebarProps) {
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useAppDispatch();
   const { user } = useTypedSelector((state: RootState) => state.auth);
 
   const menuItems = [
-    { id: "dashboard", label: "Dashboard", icon: "📊" },
-    { id: "developers", label: "Developers", icon: "👨‍💻" },
-    { id: "resume", label: "Resume Generation", icon: "📄" },
-    { id: "projects", label: "Projects", icon: "📁" },
-    { id: "analytics", label: "Analytics", icon: "📈" },
-    { id: "settings", label: "Settings", icon: "⚙️" },
+    { id: "dashboard", label: "Dashboard", icon: "📊", path: "/dashboard" },
+    { id: "developers", label: "Developers", icon: "👨‍💻", path: "/developers" },
+    { id: "resume", label: "Resume Generation", icon: "📄", path: "/resume" },
+    { id: "projects", label: "Projects", icon: "📁", path: "/projects" },
+    { id: "analytics", label: "Analytics", icon: "📈", path: "/analytics" },
+    { id: "settings", label: "Settings", icon: "⚙️", path: "/settings" },
   ];
 
-  const handleItemClick = (itemId: string) => {
-    if (onItemClick) {
-      onItemClick(itemId);
+  const handleItemClick = (path: string) => {
+    navigate(path);
+    // Close mobile sidebar after navigation
+    if (window.innerWidth < 1024) {
+      onClose();
     }
+  };
+
+  const handleSignOut = () => {
+    dispatch(signOut());
+    navigate("/");
+  };
+
+  // Get current active item based on location
+  const getActiveItem = () => {
+    const currentPath = location.pathname;
+    const activeItem = menuItems.find((item) => item.path === currentPath);
+    return activeItem?.id || "dashboard";
   };
 
   return (
@@ -59,11 +72,11 @@ export function Sidebar({
             {menuItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => handleItemClick(item.id)}
+                onClick={() => handleItemClick(item.path)}
                 className={`
                   w-full flex items-center px-4 py-3 text-left rounded-lg transition-colors
                   ${
-                    activeItem === item.id
+                    getActiveItem() === item.id
                       ? "bg-blue-100 text-blue-700 border-r-2 border-blue-600"
                       : "text-gray-700 hover:bg-gray-100"
                   }
@@ -76,9 +89,9 @@ export function Sidebar({
           </div>
         </nav>
 
-        {/* User Info */}
+        {/* User Info and Sign Out */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
-          <div className="flex items-center">
+          <div className="flex items-center mb-3">
             <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
               {user?.name?.charAt(0) || user?.email?.charAt(0) || "U"}
             </div>
@@ -89,6 +102,12 @@ export function Sidebar({
               <p className="text-xs text-gray-500">{user?.email}</p>
             </div>
           </div>
+          <button
+            onClick={handleSignOut}
+            className="w-full px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm"
+          >
+            Sign Out
+          </button>
         </div>
       </div>
     </>

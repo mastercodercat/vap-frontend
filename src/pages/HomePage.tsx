@@ -1,45 +1,26 @@
 import { useState } from "react";
 import { Sidebar } from "../components/Sidebar";
 import { Header } from "../components/Header";
-import { DevelopersPage } from "./DevelopersPage";
 
 export function HomePage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState("dashboard");
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const handleSidebarItemClick = (itemId: string) => {
-    setActiveItem(itemId);
-  };
+  return (
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar */}
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-  const getPageTitle = () => {
-    switch (activeItem) {
-      case "developers":
-        return "Developers";
-      case "resume":
-        return "Resume Generation";
-      case "projects":
-        return "Projects";
-      case "analytics":
-        return "Analytics";
-      case "settings":
-        return "Settings";
-      case "dashboard":
-      default:
-        return "Dashboard";
-    }
-  };
+      {/* Main content */}
+      <div className="flex-1 flex flex-col lg:ml-64">
+        {/* Header */}
+        <Header onMenuToggle={toggleSidebar} pageTitle="Dashboard" />
 
-  const renderContent = () => {
-    switch (activeItem) {
-      case "developers":
-        return <DevelopersPage />;
-      case "dashboard":
-      default:
-        return (
+        {/* Main content area */}
+        <main className="flex-1 overflow-y-auto p-6">
           <div className="max-w-7xl mx-auto">
             {/* Welcome section */}
             <div className="mb-8">
@@ -118,10 +99,7 @@ export function HomePage() {
                   Quick Actions
                 </h3>
                 <div className="space-y-3">
-                  <button
-                    onClick={() => setActiveItem("developers")}
-                    className="w-full flex items-center p-3 text-left rounded-lg hover:bg-gray-50 transition-colors"
-                  >
+                  <button className="w-full flex items-center p-3 text-left rounded-lg hover:bg-gray-50 transition-colors">
                     <span className="text-lg mr-3">👨‍💻</span>
                     <div>
                       <p className="font-medium text-gray-900">
@@ -210,27 +188,7 @@ export function HomePage() {
               </div>
             </div>
           </div>
-        );
-    }
-  };
-
-  return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-        activeItem={activeItem}
-        onItemClick={handleSidebarItemClick}
-      />
-
-      {/* Main content */}
-      <div className="flex-1 flex flex-col lg:ml-64">
-        {/* Header */}
-        <Header onMenuToggle={toggleSidebar} pageTitle={getPageTitle()} />
-
-        {/* Main content area */}
-        <main className="flex-1 overflow-y-auto p-6">{renderContent()}</main>
+        </main>
       </div>
     </div>
   );
