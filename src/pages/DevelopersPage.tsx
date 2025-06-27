@@ -28,8 +28,6 @@ import {
 import type { RootState } from "../store";
 import type { Developer } from "../store/slices/developersSlice";
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 export function DevelopersPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const dispatch = useAppDispatch();

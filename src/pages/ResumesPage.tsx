@@ -34,8 +34,6 @@ import {
 } from "@radix-ui/react-icons";
 import type { RootState } from "../store";
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 export function ResumesPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
