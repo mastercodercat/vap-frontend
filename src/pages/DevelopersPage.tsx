@@ -61,7 +61,7 @@ export function DevelopersPage() {
   const handleDownloadFile = (link: string, developerName: string) => {
     const fileName = developerName;
     const downloadLink = document.createElement("a");
-    downloadLink.href = `${API_URL}${link}`;
+    downloadLink.href = link;
     downloadLink.download = fileName;
     downloadLink.target = "_blank";
     downloadLink.rel = "noopener noreferrer";

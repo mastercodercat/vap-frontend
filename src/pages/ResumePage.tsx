@@ -75,9 +75,7 @@ export function ResumePage() {
       }
 
       const data = await response.json();
-      const url = `${API_URL}${
-        docType === "pdf" ? data.pdfUrl : data.resumeUrl
-      }`;
+      const url = `${docType === "pdf" ? data.pdfUrl : data.resumeUrl}`;
       setGeneratedResumeUrl(url);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");

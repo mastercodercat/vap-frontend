@@ -116,7 +116,7 @@ export function ResumesPage() {
     if (!resumeUrl) return;
     const link = document.createElement("a");
     const extension = fileType === "pdf" ? ".pdf" : ".docx";
-    link.href = `${API_URL}${resumeUrl}${extension}`;
+    link.href = resumeUrl;
     link.download = `${title}${extension}`;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
@@ -127,7 +127,7 @@ export function ResumesPage() {
 
   const handleViewPDF = (resumeUrl: string) => {
     const link = document.createElement("a");
-    link.href = `${API_URL}${resumeUrl}`;
+    link.href = resumeUrl;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
     document.body.appendChild(link);
